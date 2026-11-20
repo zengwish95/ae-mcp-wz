@@ -29,7 +29,7 @@ export function createServer(ctx: ToolContext, audit: AuditLog, tools: ToolSpec[
         const clientName = client ? `${client.name} ${client.version}` : undefined;
         try {
           if (ctx.policy.disabledTools.includes(tool.name)) {
-            throw new BridgeError("invalid_argument", `The tool ${tool.name} is switched off by this Mac's ae-motion policy.`, { fix: "Ask whoever manages this Mac if it should be enabled." });
+            throw new BridgeError("invalid_argument", `The tool ${tool.name} is switched off by this Mac's ae-motion policy.`, { fix: `To turn it back on, remove "${tool.name}" from disabledTools in ${ctx.policy.file ?? "the ae-motion policy file"} and restart the agent.` });
           }
           const out = await tool.run(args as never, ctx);
           audit.write({ tool: tool.name, client: clientName, args, ms: Math.round(performance.now() - started), status: "ok", changedProject: out.changedProject });

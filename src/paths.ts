@@ -7,7 +7,7 @@ export interface Paths {
   appSupport: string; // settings, policy, run dir
   runDir: string; // stable wrapper + per-call request/body/result files
   userPolicy: string;
-  machinePolicy: string; // pushed by MDM; wins over the user policy when present
+  machinePolicy: string; // for every user of this Mac; wins over the user policy when present
   logDir: string;
   auditLog: string;
   framesDir: string;

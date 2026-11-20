@@ -18,7 +18,7 @@ A designer or marketer describes a motion graphic in their AI coding agent (Clau
 - **Agent-agnostic.** Plain MCP over stdio. No Claude-only features. Anything an agent needs to know lives in the server (instructions, tool descriptions, resources), not in one vendor's format.
 - **Low friction for non-technical users.** One-click install, a single macOS permission prompt, no daily authentication.
 - **Designer-editable output.** The `.aep` is the deliverable, not a by-product.
-- **Corporate-safe by default.** No `eval` of external input, no world-writable IPC, server-side policy, local audit log.
+- **Safe by default.** No `eval` of external input, no world-writable IPC, server-side policy, local audit log.
 
 ## 3. Architecture
 
@@ -37,7 +37,7 @@ Running Adobe After Effects 2026
 server reads the result → typed MCP tool result
 ```
 
-- **macOS only for v1.** The team is mostly on Macs. Windows would need a separate bridge (a CEP panel with an install-time token) — out of scope for now; keep the bridge behind an interface so it can be added.
+- **macOS only for v1.** Windows would need a separate bridge (a CEP panel with an install-time token) — out of scope for now; keep the bridge behind an interface so it can be added.
 - **AE 2026 only** *(Phase 0)*. Addressed by bundle id `com.adobe.AfterEffects.application` (never by app name: a missing name hangs on a "Where is…?" chooser); `app.version` is checked to be 26.x.
 - **Synchronous request/response.** Every tool call returns only after After Effects finished, with a timeout. No polling, no shared command file.
 - **One call at a time** *(Phase 0)*. AE refuses a script while another runs and shows a modal "second script" warning, so the server queues calls. It checks `is running` without launching AE first (any AppleEvent launches it), and launches only on explicit request.
@@ -63,8 +63,8 @@ server reads the result → typed MCP tool result
 | Risky actions | The agent client's own approval prompt | Model mistakes |
 
 - Note: the Automation permission belongs to the host app (Terminal, Claude, Codex), not to this server specifically. Accepted trade-off; document it.
-- Note *(Phase 0)*: the scripting pref is AE-wide: it lets any AE script (not just this server's) write files and use the network. Accepted trade-off; document it for IT.
-- **Server-side policy file** (`~/Library/Application Support/ae-motion/policy.json`; a machine-wide `/Library/Application Support/ae-motion/policy.json`, e.g. pushed by MDM, replaces it when present): `importFolders` (default: the home folder *(Phase 1)*), `disabledTools`, and `allowRawExtendScript` (turns on `run_jsx`). Paths are checked after resolving symlinks. A malformed policy fails closed (no imports). Enforced by the server regardless of which client is connected.
+- Note *(Phase 0)*: the scripting pref is AE-wide: it lets any AE script (not just this server's) write files and use the network. Accepted trade-off; documented in the README.
+- **Server-side policy file** (`~/Library/Application Support/ae-motion/policy.json`; a machine-wide `/Library/Application Support/ae-motion/policy.json`, for every user of this Mac, replaces it when present): `importFolders` (default: the home folder *(Phase 1)*), `disabledTools`, and `allowRawExtendScript` (turns on `run_jsx`). Paths are checked after resolving symlinks. A malformed policy fails closed (no imports). Enforced by the server regardless of which client is connected.
 - **Tool annotations** (`readOnlyHint`, `destructiveHint`) so clients that honor them prompt appropriately. Treat as hints; the server policy is the real gate.
 - **Audit log**: append-only JSONL of every tool call (tool, args summary, duration, result status), plus the full text of any raw ExtendScript executed.
 - **Never `eval`** anything from outside the server.
@@ -108,13 +108,13 @@ Put this in the server `instructions` and the `motion_design_guide` resource:
 
 `audit_project` flags only real handoff problems: expression errors, missing fonts, unnamed layers, layers fully outside the frame, absolute asset paths, unusually dense keyframes. It does **not** restrict which expressions are allowed.
 
-## 7. Working with other engines and team knowledge
+## 7. Working with other engines and shared knowledge
 
 Three layers:
 
 1. **Knowledge** — portable, outside any engine.
    - Brand + motion tokens (colors, fonts, durations, named eases as cubic-beziers) in one repo. This server converts eases to AE temporal ease; Remotion/HyperFrames read them as code.
-   - Team skills (`SKILL.md`, readable by Claude and other agents) hold taste and workflows and call whichever engine fits. This server stays thin.
+   - Skills (`SKILL.md`, readable by Claude and other agents) hold taste and workflows and call whichever engine fits. This server stays thin.
    - The same guide is exposed as an MCP resource for clients without skills.
 2. **Engines** — chosen by deliverable.
 
@@ -125,8 +125,8 @@ Three layers:
    | Fast web-native motion, no designer handoff | HyperFrames |
    | Motion for web/app | build in AE → Lottie (Bodymovin) |
 
-   **Routing gotcha:** the installed HyperFrames skills claim to be the default for any video request. Server instructions and team skills need an explicit rule: "if a designer will edit it, or an `.aep` is needed, use ae-motion."
-3. **Assets** — a shared preset library (git repo or shared folder) of `.ffx`, template `.aep`s and brand assets with a `manifest.json` (name, description, parameters, preview GIF).
+   **Routing gotcha:** the installed HyperFrames skills claim to be the default for any video request. Server instructions and skills need an explicit rule: "if a designer will edit it, or an `.aep` is needed, use ae-motion."
+3. **Assets** — a preset library (git repo or folder) of `.ffx`, template `.aep`s and brand assets with a `manifest.json` (name, description, parameters, preview GIF).
 
 Combining engines: import Remotion/HyperFrames renders (e.g. transparent data-viz) as footage layers; rebuild a web composition in AE by having the agent read its timing as reference (no automatic converter); export AE work to Lottie for web playback.
 
@@ -145,7 +145,7 @@ MCP server name: `ae-motion`. Do not reuse `AfterEffectsMCP` or `~/Documents/ae-
 
 ## 9. Distribution (later phase)
 
-- Single binary (no Node needed) inside a signed macOS `.pkg`, distributed through the MDM self-service catalog.
+- Single binary (no Node needed) inside a signed macOS `.pkg`.
 - The installer detects installed agents and registers the server in each config: Claude Desktop, Claude Code, Codex (`~/.codex/config.toml`), Cursor.
 - Optional `.mcpb` for one-click Claude Desktop install.
 

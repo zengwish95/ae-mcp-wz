@@ -55,10 +55,10 @@ Also check:
   ```sh
   claude mcp add --scope user ae-motion -- /opt/homebrew/bin/node ~/ae-mcp-wz/src/index.ts
   ```
-  `claude mcp list` shows whether it's available where you are. `--scope project` instead writes a `.mcp.json` into the folder to share with a team. Claude Desktop, Codex and Cursor configs already apply everywhere.
+  `claude mcp list` shows whether it's available where you are. `--scope project` instead writes a `.mcp.json` into the folder, so it travels with that folder (for example in its git repo). Claude Desktop, Codex and Cursor configs already apply everywhere.
 - **Footage outside your home folder.** Imports are allowed from your home folder by default. For a drive or shared volume, list it in the [policy](#policy-and-logs-for-it):
   ```json
-  { "importFolders": ["~", "/Volumes/Brand"] }
+  { "importFolders": ["~", "/Volumes/Footage"] }
   ```
 - **Work on a copy.** A call that fails partway leaves its changes in place. Before a big session on a project you care about, Save As a copy or commit the `.aep` to version control.
 
@@ -95,11 +95,11 @@ Also check:
 
 Every changing call is a single **Edit > Undo** step in After Effects named "ae-motion: …". If a call fails partway, its changes are left in place and the error says so.
 
-## Policy and logs (for IT)
+## Policy and logs
 
-- Policy: `~/Library/Application Support/ae-motion/policy.json`, or machine-wide `/Library/Application Support/ae-motion/policy.json` (wins when present, e.g. pushed by MDM):
+- Policy: `~/Library/Application Support/ae-motion/policy.json`, or machine-wide `/Library/Application Support/ae-motion/policy.json` for every user of this Mac (wins when present):
   ```json
-  { "importFolders": ["~/Movies/AE Motion", "/Volumes/Brand"], "disabledTools": ["delete_items"] }
+  { "importFolders": ["~/Movies/AE Motion", "/Volumes/Footage"], "disabledTools": ["delete_items"] }
   ```
   `importFolders` defaults to the home folder. `"allowRawExtendScript": true` turns on `run_jsx`. A malformed policy turns imports off until it's fixed.
 - Audit log: `~/Library/Logs/ae-motion/audit.jsonl`, one line per tool call (tool, client, summarized arguments, duration, status).

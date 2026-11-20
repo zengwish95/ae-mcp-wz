@@ -1,5 +1,5 @@
 // Server-side policy (DESIGN.md §4). Enforced here regardless of which MCP client is connected.
-// A machine-wide policy (MDM) replaces the user policy entirely. A malformed policy fails closed.
+// A machine-wide policy (/Library) replaces the user policy entirely. A malformed policy fails closed.
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, normalize, relative, sep } from "node:path";
 import { z } from "zod";

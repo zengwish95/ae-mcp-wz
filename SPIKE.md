@@ -199,7 +199,7 @@ The spike recommended B (zero setup, pref stays off); the decision is A (documen
    - Report the scripting pref (read from the prefs file on disk without AE, or with `getPrefAsLong` in AE) with step-by-step instructions to turn it on, a result-file round-trip self-test, and whether a dialog seems to be blocking AE (instant `"1"`), each with a plain-English fix.
 4. **Tools:** `get_project`, `inspect_comp`/`inspect_layer`, `create_comp`, `create_layer`, `set_properties`, `animate`, `set_expression` (returns `expressionError`), `add_effect`.
    - `capture_frame` uses `saveFrameToPng(t, file).wait()`, with an optional `resolutionFactor`. It flattens the RGBA image onto `bgColor` in Node and returns MCP image content plus the file path.
-5. **Corporate pieces:** audit log (JSONL) and the policy file, as designed.
+5. **Safety pieces:** audit log (JSONL) and the policy file, as designed.
 6. **Tests:** unit tests on a mock bridge, covering every outcome above including `not_run`, timeouts and malformed results. Plus `spike`-style manual smoke scripts against real AE.
 7. **Carry into Phase 2 (`render`):**
    - `renderAsync()`, polled about once a second through the normal queue.

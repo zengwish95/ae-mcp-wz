@@ -72,7 +72,7 @@ export const checkSetup = defineTool({
     const prefFile = ctx.bridge.scriptingPref(state.version).enabled;
     const pref = prefFromAE ?? prefFile;
     if (pref === false && !problems.some((p) => p.code === "pref_disabled")) add("pref_disabled", "After Effects doesn't allow scripts to write files, so results can't come back.");
-    if (ctx.policy.error) add("policy_invalid", ctx.policy.error, "Ask whoever manages this Mac to fix the ae-motion policy file.");
+    if (ctx.policy.error) add("policy_invalid", ctx.policy.error, "Fix or delete the policy file named above, then restart the agent.");
 
     return {
       structured: {

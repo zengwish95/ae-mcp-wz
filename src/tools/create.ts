@@ -91,7 +91,7 @@ export const createLayer = defineTool({
       }
       if (!isPathAllowed(real, ctx.policy.importFolders)) {
         throw new BridgeError("invalid_argument", `Importing from "${p}" isn't allowed by this Mac's ae-motion policy.`, {
-          fix: `Allowed folders: ${ctx.policy.importFolders.join(", ") || "none"}. Move the file there, or ask whoever manages this Mac to allow the folder.`,
+          fix: `Allowed folders: ${ctx.policy.importFolders.join(", ") || "none"}. Move the file there, or add its folder to importFolders in ${ctx.policy.file ?? ctx.paths.userPolicy} and restart the agent.`,
         });
       }
       // ExtendScript's File() URI-decodes its argument ("%2E%2E" → ".."), so escape "%" or AE could open a

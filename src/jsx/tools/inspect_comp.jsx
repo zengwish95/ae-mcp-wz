@@ -1,0 +1,17 @@
+var comp = AEM.comp(ARGS.compId);
+var time = ARGS.time === undefined ? comp.time : ARGS.time;
+var layers = [];
+var end = Math.min(comp.numLayers, ARGS.offset + ARGS.limit);
+for (var i = ARGS.offset + 1; i <= end; i++) layers.push(AEM.summarizeLayer(comp.layer(i), time));
+var markers = [];
+var mp = comp.markerProperty;
+for (var k = 1; k <= mp.numKeys && k <= 100; k++) markers.push({ time: AEM.round(mp.keyTime(k)), comment: mp.keyValue(k).comment, duration: AEM.round(mp.keyValue(k).duration) });
+var o = AEM.summarizeItem(comp);
+o.time = AEM.round(time);
+o.workAreaStart = AEM.round(comp.workAreaStart);
+o.workAreaDuration = AEM.round(comp.workAreaDuration);
+o.motionBlur = comp.motionBlur;
+o.markers = markers;
+o.layers = layers;
+o.nextOffset = end < comp.numLayers ? end : null;
+return o;

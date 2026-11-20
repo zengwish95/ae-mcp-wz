@@ -1,0 +1,36 @@
+{
+  "name": "ae-mcp-wz",
+  "version": "0.0.0",
+  "private": true,
+  "description": "MCP server that lets coding agents build motion graphics live in Adobe After Effects (macOS).",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "start": "node src/index.ts",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "smoke": "node scripts/smoke.ts",
+    "spike:1": "node spike/01-roundtrip.ts",
+    "spike:2": "node spike/02-addressing.ts",
+    "spike:3": "node spike/03-undo.ts",
+    "spike:4": "node spike/04-dialogs-busy.ts",
+    "spike:5": "node spike/05-frame-capture.ts",
+    "spike:6": "node spike/06-render.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "bin": {
+    "ae-motion": "src/index.ts"
+  },
+  "files": [
+    "src"
+  ]
+}
